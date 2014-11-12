@@ -1,0 +1,35 @@
+<html>
+<head>
+	<title>{% block title %}Blask{% endblock %}</title>
+	<link rel='stylesheet' 
+		  type='text/css'
+		  href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700,300,400'>
+	<link rel="stylesheet" 
+		  type="text/css" 
+		  href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+	<nav>
+		<div class="content">
+			<h1><a href="/">Blask!</a></h1>
+			<h2>{% block current_page %}Home{% endblock %}</h2>
+			<ul class="menu">
+				<li>
+					<a href="{{ url_for('home_page') }}">Home</a>
+				</li>
+				<li>
+					<a href="{{ url_for('blog_page') }}">Blog</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="content">
+		{% block content %}
+		<h2>Welcome to Blask!</h2>
+		{% endblock %}
+	</div>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
