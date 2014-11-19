@@ -3,9 +3,31 @@ Intermediate Flask
 
 By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
 
+## Table of Contents
+
+- [1.0 Recap: Basic Flask](#10-recap-basic-flask)
+    + [1.1 Directory Structure](#11-directory-strucutre)
+    + [1.2 Routing](#12-routing)
+    + [1.3 Templating and `url_for`](#13-templating-and-url_for)
+- [2.0 Larger Apps in Flask: Using Blueprints](#20-larger-apps-in-flask-using-blueprints)
+    + [2.1 A New Directory Structure](#21-a-new-directory-structure)
+        * [2.1.1 Python Package Management](#211-python-package-management)
+        * [2.1.2 Why Include `run.py`?](#212-why-include-runpy)
+    + [2.2 Blueprints](#22-blueprints)
+    + [2.3 `url_for` Returns](#23-url_for-returns) 
+- [3.0 PIP, Virtualenv, and external libraries](#30-pip-virtualenv-and-external-libraries)
+    + [3.1 Using Virtualenv](#31-using-virtualenv)
+    + [3.2 Managing Dependencies](#32-managing-dependencies)
+- [4.0 Databases with Flask-Mongoengine](#40-databases-with-flask-mongoengine)
+    + [4.1 Installation and Setup](#41-installation-and-setup)
+    + [4.2 Adding a Model: `BlogPost`](#42-adding-a-model-blogpost)
+        * [4.2.1 Working With Models](#421-working-with-models)
+        * [4.2.2 Populating the Database](#422-populating-the-database)
+    + [4.3 Rendering BlogPosts](#43-rendering-blogPosts)
+
 ## 1.0 Recap: Basic Flask
 
-In case you need a refresh, here's a lighning-speed introduction to Flask
+In case you need a refresh, here's a lightning-speed introduction to Flask
 
 ### 1.1 Directory Strucutre
 
@@ -295,15 +317,236 @@ Because our routes are now spread across multiple modules, we need to use the Bl
 
 And now our app should run! You shouldn't notice any changes in what the app looks like, but under the hood we are now ready to quickly expand to a larger application!
 
+## 3.0 PIP, Virtualenv, and External Libraries
 
+### 3.1 Using Virtualenv
 
+In sections that follow, we'll be using external libraries too add functionality to our Flask app.  Flask was designed to be minimalist (they call it a ["microframework"][flask]), and it allows easy inclusion of external libraries and services.
 
+To manage these external libraries, we'll be using `pip`.  You can install it [here][pip].
 
+Next, we need to install Virtualenv, a tool that lets us specify the exact environment that we want to be in as we run our app.
 
+```bash
+$ pip install virtualenv
+```
 
+Now, we can create our virtual environment by typing the following (note the `.` at the end):
 
+```
+$ virtualenv --no-site-packages .
+```
 
+Then, enter the virtual environment by typing
 
+```
+$ source bin/activate
+```
+
+We know we are in the virtual environment because of the `(blask)` that appears before our prompt.
+
+From within here, we can install packages that we need.  If you haven't already, you should install Flask from within the virtual environment:
+
+```
+(blask)$ pip install flask
+```
+
+### 3.2 Managing Dependencies
+
+Every time we install an external library, we can save our dependencies in a file called `requirements.txt`.  To create it, run
+
+```
+(blask)$ pip freeze > requirements.txt
+```
+
+This file is just a list of libraries and version numbers that your app depends on. Now, when someone else clones your project, they can enter the virtual environment and type
+
+```
+(blask)$ pip install -r requirements.txt
+```
+
+to install all necessary dependencies in one go.  There's no need to type `pip install <package>` for each one.
+
+## 4.0 Databases with Flask-Mongoengine
+
+To use [MongoDB][mongodb] with Flask, we'll be using [Mongoengine][mongoengine].  More specifically, we'll be using [Flask-Mongoengine][flask-mongoengine], a library that integrates Mongoengine into Flask.
+
+### 4.1 Installation and Setup
+
+First, install [MongoDB][mongodb] on your computer.
+
+Next, install Flask-Mongoengine from within the virtualenv:
+
+```bash
+pip install flask-mongoengine
+pip freeze > requirements.txt
+```
+
+Then, in `app/__init__.py`, instantiate the Mongoengine database object:
+
+```python
+from flask import Flask
+from flask.ext.mongoengine import MongoEngine
+
+app = Flask(__name__)
+
+app.config['DEBUG'] = True
+app.config['MONGODB_SETTINGS'] = { 'db': 'blask' }
+
+db = MongoEngine(app)
+# ...
+```
+
+From anywhere in the app, we can access the database by importing it:
+
+```python
+from app import db
+# functions on `db`...
+```
+
+### 4.2 Adding a Model: `BlogPost`
+
+Our database models represent what our database objects will look like.  We'll put them in a new package underneath `app` called `models`. Don't forget `app/models/__init__.py`!
+
+```bash
+├── README.md
+├── app/
+│   ├── __init__.py
+│   ├── models/             # We add a new `models` package
+│   │   ├── __init__.py     # This file can be empty
+│   │   └── blog.py         # Here, we'll put our model
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── blog.py
+│   │   ├── home.py
+│   ├── static/
+│   │   ├── css/
+│   │   ├── img/
+│   │   └── js/
+│   └── templates/
+├── requirements.txt
+└── run.py
+```
+
+Now, in `app/models/blog.py`, we'll create a new model, which is a class that extends the `db.Document` class from Flask-Mongoengine.
+
+```python
+from app import db
+
+class BlogPost(db.Document):
+    author = db.StringField(required=True)
+    title = db.StringField(required=True, max_length=100)
+    body = db.StringField(required=True)
+```
+
+Our `BlogPost` class defines attributes `author`, `title`, and `body`, which are *fields* on our model.  They are set to Mongoengine `StringField` instances.  We've configured these fields to be all required. We've also given the title a maximum length.
+
+#### 4.2.1 Working With Models
+
+Now, we can create an instance of the `BlogPost` class, and call the `save()` function on it, to persist it to our MongoDB database:
+
+```python
+post = BlogPost(author='Cecelia Coder', 
+                title='My First Blog Post',
+                body='Who knew this could be so easy?')
+post.save()  # The post is now persisted to the database.
+```
+
+We can fetch it back by id, or by any of the fields.  Once `save()` has been called on Mongoengine model instances, they then have a `id` attribute that is the ID of the post.  We can then use the `objects().get(id=<id>)` function on our model class to retrieve it.
+
+```python
+the_id = post.id
+some_post = BlogPost.objects().get(id=the_id)
+
+some_post.author == post.author  # True
+some_post.title == post.title    # True
+# etc...
+```
+
+Alternately, we can get a list of all posts that meet certain requirements with the `objects()` function.
+
+```python
+# Here, we print out the titles for all the posts written by Cecelia
+many_posts = BlogPost.objects(author='Cecelia Coder')
+for post in many_posts:
+    print post.title
+```
+
+#### 4.2.2 Populating the Database 
+
+To do this in our app, we can write a script called `reset_db.py` that wipes our database and adds two new blog posts.  To do this, we can use the `connect` function to access the database from outside flask.  
+
+```python
+from mongoengine import connect
+
+connect('blask')
+```
+
+Then, we call `drop_collection` on the `BlogPost` model to wipe any existing posts.
+
+```python
+from mongoengine import connect
+from app.models.blog import BlogPost
+
+connect('blask')
+BlogPost.drop_collection()
+```
+
+Finally, we create an save some `BlogPost` objects.  Here's the full script:
+
+```python
+from mongoengine import connect
+from app.models.blog import BlogPost
+
+connect('blask')
+BlogPost.drop_collection()
+post1 = BlogPost(author='Cecelia Coder',
+                 title='My First Blog Post',
+                 body='Who knew this could be so easy?')
+post2 = BlogPost(author='Cecelia Coder',
+                 title='Flask is Fun',
+                 body='Everything is better with Mongoengine!')
+post1.save()
+post2.save()
+```
+
+### 4.3 Rendering BlogPosts
+
+To make our blog posts show up in our blog, we'll first edit our `blog_page` route to send our posts into `render_template`.
+
+```python
+from app.models.blog import BlogPost
+# ...
+@blog.route('/')  # Accessible at /blog/
+def blog_page():
+    """The blog page."""
+    posts = BlogPost.objects()
+    return render_template('blog.html', posts=posts)
+```
+
+This ensures that the `posts` variable exists in the templates, and has a list of all blog posts as it's value.
+
+Now, we can edit `blog.html` to display them:
+
+```html
+...
+{% block content %}
+<h2>Check out my posts!</h2>
+
+<ul class="posts">
+{% for post in posts %}
+    <li class="post">
+        <h3>{{ post.title }} <small>by {{ post.author }}</small></h3>
+        <p>{{ post.body }}</p>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}
+```
+
+And voila! Now if we go to `http://localhost:5000/blog/`, you should see a list of blog posts.
+
+![The Blog posts, rendered](images/3.png)
 
 
 
@@ -325,3 +568,8 @@ And now our app should run! You shouldn't notice any changes in what the app loo
 
 [jinja-blocks]: http://jinja.pocoo.org/docs/dev/templates/#template-inheritance
 [blueprints]: http://flask.pocoo.org/docs/0.10/blueprints/
+[flask]: http://flask.pocoo.org/ 
+[pip]: https://pip.pypa.io/en/latest/installing.html
+[mongoengine]: http://docs.mongoengine.org/index.html
+[mongodb]: https://www.mongodb.org/
+[flask-mongoengine]: http://flask-mongoengine.readthedocs.org/en/latest/
