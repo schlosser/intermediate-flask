@@ -434,7 +434,7 @@ Now, in `app/models/blog.py`, we'll create a new model, which is a class that ex
 from app import db
 
 class BlogPost(db.Document):
-    author = db.StringField(required=True)
+    author = db.StringField(required=True, max_length=100)
     title = db.StringField(required=True, max_length=100)
     body = db.StringField(required=True)
 ```
@@ -548,22 +548,9 @@ And voila! Now if we go to `http://localhost:5000/blog/`, you should see a list 
 
 ![The Blog posts, rendered](images/3.png)
 
+## 5.0 Working with Forms
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Coming soon!  See the code in the `blask-5/` folder!
 
 
 [jinja-blocks]: http://jinja.pocoo.org/docs/dev/templates/#template-inheritance

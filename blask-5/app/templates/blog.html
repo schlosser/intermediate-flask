@@ -1,0 +1,16 @@
+{% extends "home.html" %}
+{% block title %}Blog | {{ super() }}{% endblock %}
+{% block current_page %}Blog{% endblock %}
+
+{% block content %}
+<h2>Check out my posts!</h2>
+
+<ul class="posts">
+{% for post in posts %}
+	<li class="post">
+		<h3>{{ post.title }} <small>by {{ post.author }}</small></h3>
+		<p>{{ post.body }}</p>
+	</li>
+{% endfor %}
+</ul>
+{% endblock %}
