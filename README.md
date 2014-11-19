@@ -23,7 +23,7 @@ By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
     + [4.2 Adding a Model: `BlogPost`](#42-adding-a-model-blogpost)
         * [4.2.1 Working With Models](#421-working-with-models)
         * [4.2.2 Populating the Database](#422-populating-the-database)
-    + [4.3 Rendering BlogPosts](#43-rendering-blogPosts)
+    + [4.3 Rendering BlogPosts](#43-rendering-blogposts)
 
 ## 1.0 Recap: Basic Flask
 
