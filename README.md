@@ -24,6 +24,7 @@ By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
         * [4.2.1 Working With Models](#421-working-with-models)
         * [4.2.2 Populating the Database](#422-populating-the-database)
     + [4.3 Rendering BlogPosts](#43-rendering-blogposts)
+- [5.0 Working with Forms](#50-working-with-forms)
 
 ## 1.0 Recap: Basic Flask
 
