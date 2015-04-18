@@ -553,6 +553,11 @@ And voila! Now if we go to `http://localhost:5000/blog/`, you should see a list 
 
 Coming soon!  See the code in the `blask-5/` folder!
 
+## License
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0;float:right" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+
+
 
 [jinja-blocks]: http://jinja.pocoo.org/docs/dev/templates/#template-inheritance
 [blueprints]: http://flask.pocoo.org/docs/0.10/blueprints/
