@@ -558,7 +558,129 @@ And voila! Now if we go to `http://localhost:5000/blog/`, you should see a list 
 
 ## 5.0 Working with Forms
 
-Coming soon!  See the code in the `blask-5/` folder!
+*Work in progress-  See the code in the `blask-5/` folder for reference*
+
+So now you can display blog posts, but how can you add new blogposts to the database? With forms!
+The Flask framework has the WTForms library built-in, so you don't need to install any new packages. Let's get started!
+
+### Instructions
+
+Add a Secret Key to 'app/__init__.py' . This allows you to make the database only approve forms if they're submitted from within the app.
+```python
+app.config['DEBUG'] = True
+app.config['MONGODB_SETTINGS'] = {'db': 'blask'}
+app.config['SECRET_KEY'] = 'another random string'
+```
+
+Now let's edit the `model/blog.py` file. Import the `model_form` function and call it on the BlogPost class at the bottom.
+```
+from app import db
+from flask.ext.mongoengine.wtf import model_form
+
+class BlogPost(db.Document):
+    ...
+
+BlogPostForm = model_form(BlogPost)
+```
+
+Now the database knows what a new form looks like, but how does the form get there? Let's edit the `routes/blog.py` file.
+
+First, import the `redirect, url_for, request` functions from flask (covered in the [previous tutorial](http://learn.adicu.com/webdev/)). 
+
+Then, add the BlogPostForm object that we just declared in `models/blog.py` from app.models.blog
+
+```
+from flask import Blueprint, render_template, redirect, url_for, request
+from app.models.blog import BlogPost, BlogPostForm
+...
+```
+
+It's time to setup a new route! If you did the previous tutorial, the code will be familiar. Add this to the bottom of `routes/blog.py`
+```
+@blog.route('/new', methods=['GET', 'POST'])
+def new():
+    """Create a new post"""
+    form = BlogPostForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        form.save()
+        return redirect(url_for('blog.blog_page'))
+
+    return render_template('new.html', form=form)
+```
+If a form is submitted to the `localhost:5000/blog/new route`, `form.validate()` will compare the csrf_token with the secret key. If everything is valid, the form will be saved to the database. Otherwise, the user will be redirected to the form submission page. Note that the rendered form is auto-populated with the fieldnames of a BlogPostForm object. To make use of them though, you'll still need to know what properties to render in your HTML page. 
+
+All right! The logic is taken care of, so now it's time to take care of styling and actually displaying the new blog posts form.
+
+First, add some basic form styling to style.css
+```css
+/* Form styles */
+
+form div {
+  margin-bottom: 1rem;
+}
+
+form input[type="text"] {
+  width: 20rem;
+}
+
+form textarea {
+  width: 20rem;
+  height: 5rem;
+}
+
+form input[type="submit"] {
+  border: none;
+  outline: none;
+  background-color: #5385F2;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+}
+
+label {
+  width: 5rem;
+  display: block;
+}
+```
+
+Create a template under `templates` called `new.html`. Note `form.csrf_token`: this token gets compared with the "secret key" property, as a security measure protecting against form submissions from other websites.
+
+```html
+{% extends "home.html" %}
+{% block title %}Blog | {{ super() }}{% endblock %}
+{% block current_page %}Blog{% endblock %}
+
+{% block content %}
+<h2>Create a New Post</h2>
+
+<form action="" method="POST">
+  {{ form.csrf_token }}
+  <div>
+    {{ form.title.label}}
+    {{ form.title }}
+  </div>
+  <div>
+    {{ form.author.label }}
+    {{ form.author }}
+  </div>
+  <div>
+    {{ form.body.label }}
+    {{ form.body }}
+  </div>
+  <input type="submit" value="Create">
+</form>
+{% endblock %}
+```
+
+**BONUS**
+As a challenge, add a button for adding new posts. Here's the code for where your button should point to.
+    <a href="{{ url_for('blog.new') }}">Submit</a>
+
+## 6.0 Displaying Individual Blog Posts (Working Title)
+
+Coming eventually?
 
 ## License
 
