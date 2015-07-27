@@ -25,6 +25,7 @@ By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
         * [4.2.2 Populating the Database](#422-populating-the-database)
     + [4.3 Rendering BlogPosts](#43-rendering-blogposts)
 - [5.0 Working with Forms](#50-working-with-forms)
+- [6.0 Displaying Items in Collections](#60-displaying-items-in-collections)
 
 ## 1.0 Recap: Basic Flask
 
@@ -565,7 +566,7 @@ The Flask framework has the WTForms library built-in, so you don't need to insta
 
 ### Instructions
 
-Add a Secret Key to 'app/__init__.py' . This allows you to make the database only approve forms if they're submitted from within the app.
+Add a Secret Key to `app/__init__.py` . This allows you to make the database only approve forms if they're submitted from within the app.
 ```python
 app.config['DEBUG'] = True
 app.config['MONGODB_SETTINGS'] = {'db': 'blask'}
@@ -675,17 +676,18 @@ Create a template under `templates` called `new.html`. Note `form.csrf_token`: t
 ```
 
 **BONUS**
-As a challenge, add a button for adding new posts. Here's the code for where your button should point to.
+As a challenge, add a button for adding new posts. Place this link inside a button or LI of your choice!
+```    
     <a href="{{ url_for('blog.new') }}">Submit</a>
+```
+## 6.0 Displaying Items in Collections
+*working title*
 
-## 6.0 Displaying Individual Blog Posts (Working Title)
-
-Coming eventually?
+Coming eventually.
 
 ## License
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0;float:right" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
-
 
 
 [jinja-blocks]: http://jinja.pocoo.org/docs/dev/templates/#template-inheritance
