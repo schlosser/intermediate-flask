@@ -6,7 +6,7 @@ By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
 ## Table of Contents
 
 - [1.0 Recap: Basic Flask](#10-recap-basic-flask)
-    + [1.1 Directory Structure](#11-directory-strucutre)
+    + [1.1 Directory Structure](#11-directory-structure)
     + [1.2 Routing](#12-routing)
     + [1.3 Templating and `url_for`](#13-templating-and-url_for)
 - [2.0 Larger Apps in Flask: Using Blueprints](#20-larger-apps-in-flask-using-blueprints)
@@ -30,7 +30,7 @@ By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
 
 In case you need a refresh, here's a lightning-speed introduction to Flask
 
-### 1.1 Directory Strucutre
+### 1.1 Directory Structure
 
 In a basic flask app, This is our directory structure.
 
