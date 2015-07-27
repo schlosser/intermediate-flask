@@ -2,6 +2,7 @@ Intermediate Flask
 ==================
 
 By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
+Documentation Edits by [Cameron Yick](http://cameronyick.us)
 
 ## Table of Contents
 
@@ -45,6 +46,8 @@ In a basic flask app, This is our directory structure.
 ```
 
 All of our Python code lives in `app.py`, and to run the program we run `python app.py`. Static content lives in the `static` folder, and all HTML pages live in the `templates` folder.
+
+If you would like more review, check out ADI's [previous Flask tutorial](http://learn.adicu.com/webdev/).
 
 ### 1.2 Routing
 
