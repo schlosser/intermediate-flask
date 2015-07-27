@@ -133,7 +133,7 @@ The `blog.html` file is slightly more interesting:
 
 ```html
 {% extends "home.html" %}
-{% block title %}Blog | {{ super }}{% endblock %}
+{% block title %}Blog | {{ super() }}{% endblock %}
 {% block current_page %}Blog{% endblock %}
 
 {% block content %}
@@ -142,6 +142,8 @@ The `blog.html` file is slightly more interesting:
 ```
 
 It *extends* from `home.html`, which means it is identical to `home.html`, except any Jinja blocks defined in `blog.html` will be substituted in.  So here, our blog page will have a different `title`, `current_page`, and `content`.  
+
+The [super() block](http://jinja.pocoo.org/docs/dev/templates/#super-blocks) returns the contents of the title in the parent block. In this case, that is 'Blask!'
 
 ![blog](images/2.png)
 
