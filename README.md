@@ -339,6 +339,11 @@ Now, we can create our virtual environment by typing the following (note the `.`
 ```
 $ virtualenv --no-site-packages .
 ```
+*As of July 27 2015, --no-site-packages is default behavior the flag is deprecated. Run with:
+
+```
+$ virtualenv .
+```
 
 Then, enter the virtual environment by typing
 
