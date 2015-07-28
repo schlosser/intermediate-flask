@@ -1,7 +1,7 @@
 Intermediate Flask
 ==================
 
-By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
+By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com), with help from [Cameron Yick](http://cameronyick.us)
 
 ## Table of Contents
 
@@ -25,6 +25,7 @@ By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
         * [4.2.2 Populating the Database](#422-populating-the-database)
     + [4.3 Rendering BlogPosts](#43-rendering-blogposts)
 - [5.0 Working with Forms](#50-working-with-forms)
+- [6.0 Displaying Items in Collections](#60-displaying-items-in-collections)
 
 ## 1.0 Recap: Basic Flask
 
@@ -44,6 +45,8 @@ In a basic flask app, This is our directory structure.
 ```
 
 All of our Python code lives in `app.py`, and to run the program we run `python app.py`. Static content lives in the `static` folder, and all HTML pages live in the `templates` folder.
+
+If you would like more review, check out ADI's [introduction to Flask tutorial][intro-flask].
 
 ### 1.2 Routing
 
@@ -339,9 +342,12 @@ Now, we can create our virtual environment by typing the following (note the `.`
 ```
 $ virtualenv --no-site-packages .
 ```
+> As of July 27 2015, `--no-site-packages` is default behavior, so the flag is deprecated. Run with:
+```
+$ virtualenv .
+```
 
-Then, enter the virtual environment by typing
-
+> Then, enter the virtual environment by typing
 ```
 $ source bin/activate
 ```
@@ -353,6 +359,13 @@ From within here, we can install packages that we need.  If you haven't already,
 ```
 (blask)$ pip install flask
 ```
+> To exit the virtual environment, type `deactivate`
+
+```
+$ deactivate
+```
+
+*Note that once you add MongoDB to your app, `python run.py` will only work if called from within your virtual environment. Otherwise, there will be error messages about modules that failed to import.* 
 
 ### 3.2 Managing Dependencies
 
@@ -553,13 +566,138 @@ And voila! Now if we go to `http://localhost:5000/blog/`, you should see a list 
 
 ## 5.0 Working with Forms
 
-Coming soon!  See the code in the `blask-5/` folder!
+So now you can display blog posts, but how can you add new blogposts to the database? With forms!
+The Flask framework has the WTForms library built-in, so you don't need to install any new packages. Let's get started!
+
+### Instructions
+
+Add a Secret Key to `app/__init__.py` . This allows you to make the database only approve forms if they're submitted from within the app.
+```python
+app.config['DEBUG'] = True
+app.config['MONGODB_SETTINGS'] = {'db': 'blask'}
+app.config['SECRET_KEY'] = 'another random string'
+```
+
+Now let's edit the `model/blog.py` file. Import the `model_form` function and call it on the BlogPost class at the bottom.
+```
+from app import db
+from flask.ext.mongoengine.wtf import model_form
+
+class BlogPost(db.Document):
+    ...
+
+BlogPostForm = model_form(BlogPost)
+```
+
+Now the database knows what a new form looks like, but how does the form get there? Let's edit the `routes/blog.py` file.
+
+First, import the `redirect, url_for, request` functions from flask (covered in the [previous Flask tutorial][intro-flask]. 
+
+Then, add the BlogPostForm object that we just declared in `models/blog.py` from app.models.blog
+
+```
+from flask import Blueprint, render_template, redirect, url_for, request
+from app.models.blog import BlogPost, BlogPostForm
+...
+```
+
+It's time to setup a new route! If you did the previous [tutorial][intro-flask], the code will be familiar. Add this to the bottom of `routes/blog.py`
+```
+@blog.route('/new', methods=['GET', 'POST'])
+def new():
+    """Create a new post"""
+    form = BlogPostForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        form.save()
+        return redirect(url_for('blog.blog_page'))
+
+    return render_template('new.html', form=form)
+```
+If a form is submitted to the `localhost:5000/blog/new` route, `form.validate()` will compare the `csrf_token` with the secret key. If everything is valid, the form will be saved to the database. Otherwise, the user will be redirected to the form submission page. Note that the rendered form is auto-populated with the fieldnames of a `BlogPostForm` object. To make use of them though, you'll still need to know what properties to render in your HTML page. 
+
+All right! The logic is taken care of, so now it's time to take care of styling and actually displaying the new blog posts form.
+
+First, add some basic form styling to `style.css`
+```css
+/* Form styles */
+
+form div {
+  margin-bottom: 1rem;
+}
+
+form input[type="text"] {
+  width: 20rem;
+}
+
+form textarea {
+  width: 20rem;
+  height: 5rem;
+}
+
+form input[type="submit"] {
+  border: none;
+  outline: none;
+  background-color: #5385F2;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+}
+
+label {
+  width: 5rem;
+  display: block;
+}
+```
+
+Almost there! Now, create a file under `templates` called `new.html`. Note `form.csrf_token`: this token gets compared with the "secret key" property in your `app/__init__.py` file as a security measure protecting against form submissions from other websites.
+
+> `csrf` stands for *cross-site request forgery*. If you're curious, you can read more [here](http://stackoverflow.com/questions/5207160/what-is-a-csrf-token-what-is-its-importance-and-how-does-it-work) 
+
+```html
+{% extends "home.html" %}
+{% block title %}Blog | {{ super() }}{% endblock %}
+{% block current_page %}Blog{% endblock %}
+
+{% block content %}
+<h2>Create a New Post</h2>
+
+<form action="" method="POST">
+  {{ form.csrf_token }}
+  <div>
+    {{ form.title.label}}
+    {{ form.title }}
+  </div>
+  <div>
+    {{ form.author.label }}
+    {{ form.author }}
+  </div>
+  <div>
+    {{ form.body.label }}
+    {{ form.body }}
+  </div>
+  <input type="submit" value="Create">
+</form>
+{% endblock %}
+```
+
+**BONUS**
+As a challenge, add a button for creating these new posts. Place this link inside a button or `<li>` of your choice!
+```    
+    <a href="{{ url_for('blog.new') }}">Submit</a>
+```
+
+![Submit form and submit button](images/4.png)
+
+## 6.0 Displaying Items in Collections
+*working title*
+
+Coming eventually.
 
 ## License
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0;float:right" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
-
-
 
 [jinja-blocks]: http://jinja.pocoo.org/docs/dev/templates/#template-inheritance
 [blueprints]: http://flask.pocoo.org/docs/0.10/blueprints/
@@ -568,3 +706,4 @@ Coming soon!  See the code in the `blask-5/` folder!
 [mongoengine]: http://docs.mongoengine.org/index.html
 [mongodb]: https://www.mongodb.org/
 [flask-mongoengine]: http://flask-mongoengine.readthedocs.org/en/latest/
+[intro-flask]: http://learn.adicu.com/webdev/
