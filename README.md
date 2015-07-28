@@ -1,8 +1,7 @@
 Intermediate Flask
 ==================
 
-By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
-With help from [Cameron Yick](http://cameronyick.us)
+By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com), with help from [Cameron Yick](http://cameronyick.us)
 
 ## Table of Contents
 
@@ -567,8 +566,6 @@ And voila! Now if we go to `http://localhost:5000/blog/`, you should see a list 
 
 ## 5.0 Working with Forms
 
-*Work in progress-  See the code in the `blask-5/` folder for reference*
-
 So now you can display blog posts, but how can you add new blogposts to the database? With forms!
 The Flask framework has the WTForms library built-in, so you don't need to install any new packages. Let's get started!
 
@@ -617,11 +614,11 @@ def new():
 
     return render_template('new.html', form=form)
 ```
-If a form is submitted to the `localhost:5000/blog/new` route, `form.validate()` will compare the csrf_token with the secret key. If everything is valid, the form will be saved to the database. Otherwise, the user will be redirected to the form submission page. Note that the rendered form is auto-populated with the fieldnames of a BlogPostForm object. To make use of them though, you'll still need to know what properties to render in your HTML page. 
+If a form is submitted to the `localhost:5000/blog/new` route, `form.validate()` will compare the `csrf_token` with the secret key. If everything is valid, the form will be saved to the database. Otherwise, the user will be redirected to the form submission page. Note that the rendered form is auto-populated with the fieldnames of a `BlogPostForm` object. To make use of them though, you'll still need to know what properties to render in your HTML page. 
 
 All right! The logic is taken care of, so now it's time to take care of styling and actually displaying the new blog posts form.
 
-First, add some basic form styling to style.css
+First, add some basic form styling to `style.css`
 ```css
 /* Form styles */
 
@@ -654,9 +651,9 @@ label {
 }
 ```
 
-Almost there! Now, create a file under `templates` called `new.html`. Note `form.csrf_token`: this token gets compared with the "secret key" property, as a security measure protecting against form submissions from other websites.
+Almost there! Now, create a file under `templates` called `new.html`. Note `form.csrf_token`: this token gets compared with the "secret key" property in your `app/__init__.py` file as a security measure protecting against form submissions from other websites.
 
-> `csrf` stands for *cross-site request forgery*. Read more [here](http://stackoverflow.com/questions/5207160/what-is-a-csrf-token-what-is-its-importance-and-how-does-it-work) 
+> `csrf` stands for *cross-site request forgery*. If you're curious, you can read more [here](http://stackoverflow.com/questions/5207160/what-is-a-csrf-token-what-is-its-importance-and-how-does-it-work) 
 
 ```html
 {% extends "home.html" %}
