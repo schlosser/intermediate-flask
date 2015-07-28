@@ -360,6 +360,13 @@ From within here, we can install packages that we need.  If you haven't already,
 ```
 (blask)$ pip install flask
 ```
+> To exit the virtual environment, type `deactivate`
+
+```
+$ deactivate
+```
+
+*Note that once you add MongoDB to your app, `python run.py` will only work if called from within your virtual environment. Otherwise, there will be error messages about modules that failed to import.* 
 
 ### 3.2 Managing Dependencies
 
@@ -683,6 +690,9 @@ As a challenge, add a button for creating these new posts. Place this link insid
 ```    
     <a href="{{ url_for('blog.new') }}">Submit</a>
 ```
+
+![Submit form and submit button](images/4.png)
+
 ## 6.0 Displaying Items in Collections
 *working title*
 
