@@ -2,7 +2,7 @@ Intermediate Flask
 ==================
 
 By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com)
-Documentation Edits by [Cameron Yick](http://cameronyick.us)
+With help from [Cameron Yick](http://cameronyick.us)
 
 ## Table of Contents
 
@@ -47,7 +47,7 @@ In a basic flask app, This is our directory structure.
 
 All of our Python code lives in `app.py`, and to run the program we run `python app.py`. Static content lives in the `static` folder, and all HTML pages live in the `templates` folder.
 
-If you would like more review, check out ADI's [previous Flask tutorial](http://learn.adicu.com/webdev/).
+If you would like more review, check out ADI's [introduction to Flask tutorial][intro-flask].
 
 ### 1.2 Routing
 
@@ -343,14 +343,12 @@ Now, we can create our virtual environment by typing the following (note the `.`
 ```
 $ virtualenv --no-site-packages .
 ```
-*As of July 27 2015, --no-site-packages is default behavior the flag is deprecated. Run with:
-
+> As of July 27 2015, `--no-site-packages` is default behavior, so the flag is deprecated. Run with:
 ```
 $ virtualenv .
 ```
 
-Then, enter the virtual environment by typing
-
+> Then, enter the virtual environment by typing
 ```
 $ source bin/activate
 ```
@@ -589,7 +587,7 @@ BlogPostForm = model_form(BlogPost)
 
 Now the database knows what a new form looks like, but how does the form get there? Let's edit the `routes/blog.py` file.
 
-First, import the `redirect, url_for, request` functions from flask (covered in the [previous tutorial](http://learn.adicu.com/webdev/)). 
+First, import the `redirect, url_for, request` functions from flask (covered in the [previous Flask tutorial][intro-flask]. 
 
 Then, add the BlogPostForm object that we just declared in `models/blog.py` from app.models.blog
 
@@ -599,7 +597,7 @@ from app.models.blog import BlogPost, BlogPostForm
 ...
 ```
 
-It's time to setup a new route! If you did the previous tutorial, the code will be familiar. Add this to the bottom of `routes/blog.py`
+It's time to setup a new route! If you did the previous [tutorial][intro-flask], the code will be familiar. Add this to the bottom of `routes/blog.py`
 ```
 @blog.route('/new', methods=['GET', 'POST'])
 def new():
@@ -612,7 +610,7 @@ def new():
 
     return render_template('new.html', form=form)
 ```
-If a form is submitted to the `localhost:5000/blog/new route`, `form.validate()` will compare the csrf_token with the secret key. If everything is valid, the form will be saved to the database. Otherwise, the user will be redirected to the form submission page. Note that the rendered form is auto-populated with the fieldnames of a BlogPostForm object. To make use of them though, you'll still need to know what properties to render in your HTML page. 
+If a form is submitted to the `localhost:5000/blog/new` route, `form.validate()` will compare the csrf_token with the secret key. If everything is valid, the form will be saved to the database. Otherwise, the user will be redirected to the form submission page. Note that the rendered form is auto-populated with the fieldnames of a BlogPostForm object. To make use of them though, you'll still need to know what properties to render in your HTML page. 
 
 All right! The logic is taken care of, so now it's time to take care of styling and actually displaying the new blog posts form.
 
@@ -649,7 +647,9 @@ label {
 }
 ```
 
-Create a template under `templates` called `new.html`. Note `form.csrf_token`: this token gets compared with the "secret key" property, as a security measure protecting against form submissions from other websites.
+Almost there! Now, create a file under `templates` called `new.html`. Note `form.csrf_token`: this token gets compared with the "secret key" property, as a security measure protecting against form submissions from other websites.
+
+> `csrf` stands for *cross-site request forgery*. Read more [here](http://stackoverflow.com/questions/5207160/what-is-a-csrf-token-what-is-its-importance-and-how-does-it-work) 
 
 ```html
 {% extends "home.html" %}
@@ -679,7 +679,7 @@ Create a template under `templates` called `new.html`. Note `form.csrf_token`: t
 ```
 
 **BONUS**
-As a challenge, add a button for adding new posts. Place this link inside a button or LI of your choice!
+As a challenge, add a button for creating these new posts. Place this link inside a button or `<li>` of your choice!
 ```    
     <a href="{{ url_for('blog.new') }}">Submit</a>
 ```
@@ -692,7 +692,6 @@ Coming eventually.
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0;float:right" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
 
-
 [jinja-blocks]: http://jinja.pocoo.org/docs/dev/templates/#template-inheritance
 [blueprints]: http://flask.pocoo.org/docs/0.10/blueprints/
 [flask]: http://flask.pocoo.org/ 
@@ -700,3 +699,4 @@ Coming eventually.
 [mongoengine]: http://docs.mongoengine.org/index.html
 [mongodb]: https://www.mongodb.org/
 [flask-mongoengine]: http://flask-mongoengine.readthedocs.org/en/latest/
+[intro-flask]: http://learn.adicu.com/webdev/
