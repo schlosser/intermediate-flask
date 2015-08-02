@@ -1,0 +1,19 @@
+{% extends "home.html" %}
+{% block title %}Blog | {{ super() }}{% endblock %}
+<!-- super renders contents of parent title block -->
+{% block current_page %}Blog{% endblock %}
+
+{% block content %}
+<h2>Check out my posts!</h2>
+
+<ul class="posts">
+    {% for post in posts %}
+    {% set picture_id= range(1, 726)|random %}
+        <li class="post">
+         <a href="{{ url_for('blog.view', id=post.id) }}"><img class="post__img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}"></a>
+            <h3>{{ post.title }} <small>by {{ post.author }}</small></h3>
+            <p>{{ post.body }}</p>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
