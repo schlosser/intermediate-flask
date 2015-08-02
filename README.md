@@ -691,9 +691,96 @@ As a challenge, add a button for creating these new posts. Place this link insid
 ![Submit form and submit button](images/4.png)
 
 ## 6.0 Displaying Items in Collections
-*working title*
+*Reference Code is in Blask-6*
 
-Coming eventually.
+If your blog posts have longer bodies, you may want them to be displayed on their own page, separate from the list of all pages. Let's make a new route in `routes/blog.py` to give each post its own page.
+
+Before we get into the application logic, here are some additional styles to add to the bottom of `static/css/styles.css`. It is based loosely off of BEM (Block Element Modifier) CSS syntax.
+
+```css
+/*Styles for the Blog Post Page*/
+.post {
+  display:block;
+  overflow: auto; /*Fixes Clearfix Issue*/
+}
+
+.post__img-thumb {
+  float:right;
+  margin: 30px 30px; 
+}
+
+.post__img-full {
+  margin-bottom:30px;
+}
+
+.post__author {
+  font-size: 1.3rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+}
+
+.post__button {
+  border: none;
+  outline: none;
+  background-color: #5C32ED;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  display:inline-block;
+  margin-top: 20px;
+  text-decoration:none;
+}
+```
+
+Let's dive in! The syntax for grabbing a variable from the URL is a review from the [Intro Flask Tutorial][intro-flask]
+
+```python
+...
+@blog.route('/view/<id>')
+def view(id):
+    """View contents of a blog post"""
+    post = BlogPost.objects.get_or_404(id=id)
+    return render_template('post.html', post=post)
+```
+
+We're using the `get_or_404` method from the `flask-mongoengine` module, which returns a post based on the post's `ObjectID`. Every BlogPost automatically gets one upon creation.
+
+Next, let's create `templates/post.html` for the post pages. We'll display all the fields related to the post (author, title, and body). We'll also include a button for getting back to the general blogs pages.
+
+```html
+{% extends "home.html" %}
+{% block title %}Blog | {{ super() }} | post.title {% endblock %}
+{% block current_page %}Blog{% endblock %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <h2 class="post__author"> {{ post.author }}</h2>
+    <p> {{ post.body }}</p>
+    <a class="post__button" href="{{ url_for('blog.blog_page') }}">Back to Blogs</a>
+{% endblock %}
+```
+
+Now, let's edit the `templates/blog.html` page to give easy access to each post page. Use jinja's inline syntax to pass the post's id to the route.
+
+```html
+<ul class="posts">
+    {% for post in posts %}
+        <li class="post">
+         <a href="{{ url_for('blog.view', id=post.id) }}">View Post</a>
+            <h3>{{ post.title }} <small>by {{ post.author }}</small></h3>
+            <p>{{ post.body }}</p>
+        </li>
+    {% endfor %}
+</ul>
+```
+Tadaa! You've created a way to access and view individual blog posts pages!
+
+### Placeholder Images with Jinja and Placeholders
+
+Now, if you're prototyping an application you may not time to design proper images for all your dummy content. Fortunately, there are many ways to gather placeholder content. Some are basic random text generators (hipster ipsum, bacon ipsum), some generate specific random content (ex usernames and locations), and some generate placeholder images (placehold.it, cat placeholder, etc). We're going to use a service that uses free images from Unsplash. 
+
+
 
 ## License
 
