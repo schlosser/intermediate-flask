@@ -26,6 +26,8 @@ By [Dan Schlosser](http://danrs.ch) and [ADI](https://adicu.com), with help from
     + [4.3 Rendering BlogPosts](#43-rendering-blogposts)
 - [5.0 Working with Forms](#50-working-with-forms)
 - [6.0 Displaying Items in Collections](#60-displaying-items-in-collections)
+    + [6.1 Post Pages](#61-post-pages)
+    + [6.2 Picture Placeholders](#62-picture-placeholders)
 
 ## 1.0 Recap: Basic Flask
 
@@ -732,6 +734,7 @@ Before we get into the application logic, here are some additional styles to add
   text-decoration:none;
 }
 ```
+### 6.1 Post Pages
 
 Let's dive in! The syntax for grabbing a variable from the URL is a review from the [Intro Flask Tutorial][intro-flask]
 
@@ -776,9 +779,63 @@ Now, let's edit the `templates/blog.html` page to give easy access to each post 
 ```
 Tadaa! You've created a way to access and view individual blog posts pages!
 
-### Placeholder Images with Jinja and Placeholders
+### 6.2 Picture Placeholders
 
 Now, if you're prototyping an application you may not time to design proper images for all your dummy content. Fortunately, there are many ways to gather placeholder content. Some are basic random text generators (hipster ipsum, bacon ipsum), some generate specific random content (ex usernames and locations), and some generate placeholder images (placehold.it, cat placeholder, etc). We're going to use a service that uses free images from Unsplash. 
+
+You can read about how to use the Unsplash.it API [here](https://unsplash.it/). They currently have 726 images available. Let's add the following to `blog.html` before breaking it down in chunks.
+
+```html
+...
+<ul class="posts">
+    {% for post in posts %}
+    {% set picture_id= range(1, 726)|random %}
+        <li class="post">
+         <a href="{{ url_for('blog.view', id=post.id) }}"><img class="post__img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}"></a>
+            <h3>{{ post.title }} <small>by {{ post.author }}</small></h3>
+            <p>{{ post.body }}</p>
+        </li>
+    {% endfor %}
+</ul>
+...
+```
+The first thing we've done is replace the generic "new post" link with a stylish image.
+
+> `<img class="post__img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}">`
+
+Basic usage of Unsplash API works is as follows, visit the API documentation for more complex usage.
+
+> `https://unsplash.it/<width>/<height>/<picture_id>`
+
+Next, we're using the native "random" and "range" functions in Jinja to generate random numbers, and use them in the call to Unsplash. Read more about jinja filters [here](http://jinja.pocoo.org/docs/dev/templates/#random)
+
+> `{% set picture_id= range(1, 726)|random %}`
+
+
+![Blog Page with Placeholders](images/5.png)
+
+
+Almost done! Now let's add the random picture to the blog post page as well.
+
+```html
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <h2 class="post__author"> {{ post.author }}</h2>
+    {% set picture_id= range(1, 726)|random %}
+    <a href="{{ url_for('blog.view', id=post.id) }}"><img class="post__img-full" src="https://unsplash.it/600/400/?image={{ picture_id }}"></a>
+    <p> {{ post.body }}</p>
+    <a class="post__button" href="{{ url_for('blog.blog_page') }}">Back to Blogs</a>
+{% endblock %}
+```
+
+![View Post Page](images/6.png)
+
+
+**Bonus:**
+In this demo example, the random picture used on the `blogs.html` page will be different from the one that shows on your `post.html` page. However, you can add a parameter to your route to pass the picture id number so that the same picture is rendered in both places.
+
+Note- In real life, you may not want to exposure the post's object ID to the public url for security reasons. You should use a `slug` field or perhaps a `rowID` field instead.
+
 
 
 
