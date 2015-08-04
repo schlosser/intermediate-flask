@@ -697,7 +697,7 @@ As a challenge, add a button for creating these new posts. Place this link insid
 
 If your blog posts have longer bodies, you may want them to be displayed on their own page, separate from the list of all pages. Let's make a new route in `routes/blog.py` to give each post its own page.
 
-Before we get into the application logic, here are some additional styles to add to the bottom of `static/css/styles.css`. It is based loosely off of BEM (Block Element Modifier) CSS syntax.
+Before we get into the application logic, here are some additional styles to add to the bottom of `static/css/styles.css`.
 
 ```css
 /*Styles for the Blog Post Page*/
@@ -706,22 +706,22 @@ Before we get into the application logic, here are some additional styles to add
   overflow: auto; /*Fixes Clearfix Issue*/
 }
 
-.post__img-thumb {
+.post-img-thumb {
   float:right;
   margin: 30px 30px; 
 }
 
-.post__img-full {
+.post-img-full {
   margin-bottom:30px;
 }
 
-.post__author {
+.post-author {
   font-size: 1.3rem;
   line-height: 1.5rem;
   font-weight: 400;
 }
 
-.post__button {
+.post-button {
   border: none;
   outline: none;
   background-color: #5C32ED;
@@ -758,9 +758,9 @@ Next, let's create `templates/post.html` for the post pages. We'll display all t
 
 {% block content %}
     <h1>{{ post.title }}</h1>
-    <h2 class="post__author"> {{ post.author }}</h2>
+    <h2 class="post-author"> {{ post.author }}</h2>
     <p> {{ post.body }}</p>
-    <a class="post__button" href="{{ url_for('blog.blog_page') }}">Back to Blogs</a>
+    <a class="post-button" href="{{ url_for('blog.blog_page') }}">Back to Blogs</a>
 {% endblock %}
 ```
 
@@ -792,7 +792,7 @@ You can read about how to use the Unsplash.it API [here](https://unsplash.it/). 
   {% set picture_id= range(1, 726)|random %}
     <li class="post">
       <a href="{{ url_for('blog.view', id=post.id) }}">
-        <img class="post__img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}">
+        <img class="post-img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}">
       </a>
       <h3>{{ post.title }} <small> by {{ post.author }}</small></h3>
       <p>{{ post.body }}</p>
@@ -803,7 +803,7 @@ You can read about how to use the Unsplash.it API [here](https://unsplash.it/). 
 ```
 The first thing we've done is replace the generic "new post" link with a stylish image.
 
-> `<img class="post__img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}">`
+> `<img class="post-img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}">`
 
 Basic usage of Unsplash API works is as follows, visit the API documentation for more complex usage.
 
@@ -822,11 +822,11 @@ Almost done! Now let's add the random picture to the blog post page as well.
 ```html
 {% block content %}
     <h1>{{ post.title }}</h1>
-    <h2 class="post__author"> {{ post.author }}</h2>
+    <h2 class="post-author"> {{ post.author }}</h2>
     {% set picture_id= range(1, 726)|random %}
     <a href="{{ url_for('blog.view', id=post.id) }}"><img class="post__img-full" src="https://unsplash.it/600/400/?image={{ picture_id }}"></a>
     <p> {{ post.body }}</p>
-    <a class="post__button" href="{{ url_for('blog.blog_page') }}">Back to Blogs</a>
+    <a class="post-button" href="{{ url_for('blog.blog_page') }}">Back to Blogs</a>
 {% endblock %}
 ```
 

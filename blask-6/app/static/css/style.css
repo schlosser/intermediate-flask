@@ -101,14 +101,14 @@ label {
 	display:block;
 	overflow: auto; /*Fixes Clearfix Issue*/
 }
-.post__img-thumb {
+.post-img-thumb {
 	float:right;
 	margin: 30px 30px; /* for the all posts page */
 }
-.post__img-full {
+.post-img-full {
 	margin-bottom:30px;
 }
-.post__author {
+.post-author {
 	font-size: 1.3rem;
 	line-height: 1.5rem;
 	font-weight: 400;
