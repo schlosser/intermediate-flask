@@ -788,10 +788,12 @@ You can read about how to use the Unsplash.it API [here](https://unsplash.it/). 
 ```html
 ...
 <ul class="posts">
-    {% for post in posts %}
-    {% set picture_id= range(1, 726)|random %}
+  {% for post in posts %}
+  {% set picture_id= range(1, 726)|random %}
         <li class="post">
-         <a href="{{ url_for('blog.view', id=post.id) }}"><img class="post__img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}"></a>
+         <a href="{{ url_for('blog.view', id=post.id) }}">
+           <img class="post__img-thumb" src="https://unsplash.it/300/230/?image={{ picture_id }}">
+         </a>
             <h3>{{ post.title }} <small>by {{ post.author }}</small></h3>
             <p>{{ post.body }}</p>
         </li>
