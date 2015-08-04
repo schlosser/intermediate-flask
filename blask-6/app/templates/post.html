@@ -1,0 +1,12 @@
+{% extends "home.html" %}
+{% block title %}Blog | {{ super() }} | post.title {% endblock %}
+{% block current_page %}Blog{% endblock %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <h2 class="post-author"> {{ post.author }}</h2>
+    {% set picture_id= range(1, 726)|random %}
+    <a href="{{ url_for('blog.view', id=post.id) }}"><img class="post-img-full" src="https://unsplash.it/600/400/?image={{ picture_id }}"></a>
+    <p> {{ post.body }}</p>
+    <a class="post__button" href="{{ url_for('blog.blog_page') }}">Back to Blogs</a>
+{% endblock %}
