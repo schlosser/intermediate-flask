@@ -781,7 +781,7 @@ Tadaa! You've created a way to access and view individual blog posts pages!
 
 ### 6.2 Picture Placeholders
 
-Now, if you're prototyping an application you may not time to design proper images for all your dummy content. Fortunately, there are many ways to gather placeholder content. Some are basic random text generators (hipster ipsum, bacon ipsum), some generate specific random content (ex usernames and locations), and some generate placeholder images (placehold.it, cat placeholder, etc). We're going to use a service that uses free images from Unsplash. 
+Now, if you're prototyping an application you may not time to design proper images for all your dummy content. Fortunately, there are many ways to gather placeholder content. Some are basic random text generators ([hipster ipsum](http://hipsum.co/), [bacon ipsum](https://baconipsum.com/)), some generate application specific content like ([random users](https://randomuser.me/)), and some generate placeholder images ([placehold.it](http://placehold.it/), [placekitten](https://placekitten.com/), [placebear](placebear.com)). We're going to use a service that uses free images from [Unsplash](https://unsplash.com/), a place for free high quality stock photos. 
 
 You can read about how to use the Unsplash.it API [here](https://unsplash.it/). They currently have 726 images available. Let's add the following to `blog.html` before breaking it down in chunks.
 
